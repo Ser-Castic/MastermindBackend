@@ -30,7 +30,7 @@ public class MastermindController {
         return ((int)Math.random() * 8) + 1;
     }
 
-//    public static int[] guessChecker() {
+//    public static int[] guessChecker() { // this checks
 //
 //
 //    }
