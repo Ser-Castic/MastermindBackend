@@ -37,7 +37,7 @@ public class MastermindController {
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public String home(Model model) {
         model.addAttribute(games.findAll());
-        return "home";
+        return "home.html";
     }
 
 
