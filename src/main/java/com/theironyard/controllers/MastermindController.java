@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 @RestController
 //@Controller
 public class MastermindController {
+    ArrayList<int[]> listOfChecks = new ArrayList<>();
 
     @Autowired
     MastermindRepository games;
@@ -23,6 +25,7 @@ public class MastermindController {
             Mastermind master = new Mastermind();
             master.setGuesses(new int[]{numberGenerator(), numberGenerator(), numberGenerator(), numberGenerator()});//creates the answer
             master.setChecks(new int[]{0,0,0,0});
+            listOfChecks.add(master.getChecks());
             games.save(master);
         }
     }
@@ -55,28 +58,30 @@ public class MastermindController {
 
     @CrossOrigin
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    public Mastermind home() {
+    public int[] home() {
         init();
-        return games.findOne(1); // index(round), guess(Answer), checks(bogus array), round 1 is a wash
+        //return games.findOne(1); // index(round), guess(Answer), checks(bogus array), round 1 is a wash
+        return listOfChecks.get(0); // gives the first checks array in the arrayList
     }
 
     @CrossOrigin
     @RequestMapping(path = "/guess", method = RequestMethod.POST)
-    public Iterable<Mastermind> guessCheck(@RequestBody int [] guess) {//request JSON object in the form of int array
+    public ArrayList<int[]> guessCheck(@RequestBody int [] guess) {//request JSON object in the form of int array
         Mastermind answerObject = games.findOne(1);// sets answer Object to check against the guess
         Mastermind guessObject = new Mastermind();
         int [] response = checkAgainstAnswer(answerObject.getGuesses(), guess);//sets the checks array based on checkAgainstAnswer method
         guessObject.setGuesses(guess);
         guessObject.setChecks(response);
         games.save(guessObject); // saves to repo
-        return games.findAll(); // returns all instances
+        listOfChecks.add(guessObject.getChecks()); //ArrayList that contains checks
+        return listOfChecks; // returns all instances ? returns arrayList of checks
     }
 
     @CrossOrigin
     @RequestMapping(path = "/new-game", method = RequestMethod.GET)
     void newGame(HttpServletResponse response) throws IOException {
         games.deleteAll();
-        response.sendRedirect("http://localhost:8080");
+        response.sendRedirect("redirect:/");
     }
 
 }
