@@ -12,7 +12,7 @@ import java.util.Arrays;
 public class MastermindController {
 
     private boolean reset = true;
-    int [] answer = new int[4];
+    int [] answer = new int[4]; // for storing the current answer
 
     @Autowired
     MastermindRepository games;
@@ -23,7 +23,7 @@ public class MastermindController {
             Mastermind master = new Mastermind();
             master.setGuesses(new int[]{numberGenerator(), numberGenerator(), numberGenerator(), numberGenerator()});//creates the answer
             master.setChecks(new int[]{0, 0, 0, 0});
-            answer = master.getGuesses();
+            answer = master.getGuesses(); // sets the current answer
             games.save(master);
             reset = false;
         }
@@ -59,9 +59,9 @@ public class MastermindController {
 
     @CrossOrigin
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    public Iterable<Mastermind> home() {
+    public int[] home() {
         init();
-        return games.findAll(); // index(round), guess(Answer), checks(bogus array), round 1 is a wash
+        return answer; // index(round), guess(Answer), checks(bogus array), round 1 is a wash
     }
 
     @CrossOrigin
