@@ -33,28 +33,41 @@ public class MastermindController {
         return (int) (Math.random() * 8) + 1;
     }
 
-    public static int[] checkAgainstAnswer(int[] answerArray, int[] guessArray) { // this checks
-        answerArray = Arrays.copyOf(answerArray, answerArray.length);
-        guessArray = Arrays.copyOf(guessArray, guessArray.length);
+    public static int[] checkGuess(int[] answer, int[] guess) {
+        answer = Arrays.copyOf(answer, answer.length);
+        guess = Arrays.copyOf(guess, guess.length);
 
-        int[] result = new int[answerArray.length];
+        int [] results = new int[answer.length];
 
-        for (int i = 0; i < result.length; i++) {
-            if (answerArray[i] == guessArray[i]) {
-                result[i] = 2;
-                answerArray[i] = 0;
-                guessArray[i] = 0;
+
+        for (int i = 0; i < results.length; i ++) {
+            if (answer[i] == guess[i]) {
+                results[i] = 2;
+                answer[i] = 0;
+                guess[i] = 0;
             }
         }
-        for (int i = 0; i < result.length; i++) {
-            int answerIndex = Arrays.binarySearch(answerArray, guessArray[i]);
 
-            if (guessArray[i] > 0 && answerIndex > -1) {
-                result[i] = 1;
-                answerArray[answerIndex] = 0;
+        for (int i = 0; i < results.length; i ++) {
+            int answerIndex = findIndexOfValue(answer, guess[i]);
+
+            if (answerIndex > -1 && answer[answerIndex] > 0) {
+                results[i] = 1;
+                answer[answerIndex] = 0;
             }
         }
-        return result;
+
+        return results;
+    }
+
+    public static int findIndexOfValue(int [] array, int value) {
+        for (int i = 0;i < array.length;i++) {
+            if (array[i] == value) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     @CrossOrigin
@@ -68,7 +81,7 @@ public class MastermindController {
     @RequestMapping(path = "/guess", method = RequestMethod.POST)
     public Iterable<Mastermind> guessCheck(@RequestBody int[] guess) {//request JSON object in the form of int array
         Mastermind guessObject = new Mastermind();
-        int[] response = checkAgainstAnswer(answer, guess);//sets the checks array based on checkAgainstAnswer method
+        int[] response = checkGuess(answer, guess);//sets the checks array based on checkAgainstAnswer method
         guessObject.setGuesses(guess);
         guessObject.setChecks(response);
         games.save(guessObject); // saves to repo
