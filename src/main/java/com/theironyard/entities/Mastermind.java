@@ -9,20 +9,17 @@ public class Mastermind {
     @GeneratedValue
     int id;
 
-    @Column(nullable = false) // Keeping track of the rounds of the game
-    int round;
-
     @Column(nullable = false) // What the front end is passing to us as a guess
-    int [] guesses;
+            int[] guesses;
 
     @Column(nullable = false) // What we return (reds,whites,blanks) based on the guess
-    int [] checks;
+            int[] checks;
 
     public Mastermind() {
     }
 
-    public Mastermind(int round, int[] guesses, int[] checks) {
-        this.round = round;
+    public Mastermind(int id, int[] guesses, int[] checks) {
+        this.id = id;
         this.guesses = guesses;
         this.checks = checks;
     }
@@ -31,12 +28,8 @@ public class Mastermind {
         return id;
     }
 
-    public int getRound() {
-        return round;
-    }
-
-    public void setRound(int round) {
-        this.round = round;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int[] getGuesses() {
