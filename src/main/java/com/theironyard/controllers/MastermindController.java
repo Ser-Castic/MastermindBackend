@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
 
 @RestController
@@ -72,9 +74,9 @@ public class MastermindController {
 
     @CrossOrigin
     @RequestMapping(path = "/new-game", method = RequestMethod.GET)
-    public String newGame() {
+    void newGame(HttpServletResponse response) throws IOException {
         games.deleteAll();
-        return "redirect:/";
+        response.sendRedirect("http://localhost:8080");
     }
 
 }
